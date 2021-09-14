@@ -11,7 +11,7 @@ cmd=/tmp/mount-boot
 cmd_sig="$cmd.asc"
 
 if [ -z "$dev" ]; then
-	dev=/dev/sda
+	dev=/dev/nvme
 fi
 
 if [ -z "$offset" ]; then

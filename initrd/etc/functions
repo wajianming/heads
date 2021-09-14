@@ -55,7 +55,7 @@ confirm_totp()
 	prompt="$1"
 	last_half=X
 	unset totp_confirm
-
+	timeout=3
 	while true; do
 
 		# update the TOTP code every thirty seconds
@@ -70,7 +70,7 @@ confirm_totp()
 			|| recovery "TOTP code generation failed"
 		fi
 
-		echo -n "$date $TOTP: "
+		echo -n "$timeout seconds left for default setting. "
 
 		# read the first character, non-blocking
 		read \
@@ -80,7 +80,13 @@ confirm_totp()
 			-p "$prompt" \
 			totp_confirm \
 		&& break
-
+    
+		timeout=`echo $((timeout-1))`
+		if [ $timeout -lt 0 ]; then
+			echo "Use default boot after timeout."
+			totp_confirm='y'
+			break
+		fi
 		# nothing typed, redraw the line
 		echo -ne '\r'
 	done

@@ -12,7 +12,7 @@ valid_hash="n"
 valid_global_hash="n"
 valid_rollback="n"
 force_menu="n"
-gui_menu="n"
+gui_menu="y"
 force_boot="n"
 skip_confirm="n"
 while getopts "b:d:p:a:r:c:uimgfs" arg; do
@@ -162,7 +162,7 @@ scan_options() {
 	echo "+++ Scanning for unsigned boot options"
 	option_file="/tmp/kexec_options.txt"
 	if [ -r $option_file ]; then rm $option_file; fi
-	for i in `find $bootdir -name "$config"`; do
+	for i in `find $bootdir/boot -name "$config"`; do
 		kexec-parse-boot "$bootdir" "$i" >> $option_file
 	done
 	# FC29/30+ may use BLS format grub config files
@@ -320,10 +320,10 @@ while true; do
 	else
 	  check_config $paramsdir
 	fi
-	TMP_DEFAULT_FILE=`find /tmp/kexec/kexec_default.*.txt 2>/dev/null | head -1` || true
+	TMP_DEFAULT_FILE=`find /boot/kexec_default.*.txt 2>/dev/null | head -1` || true
 	TMP_MENU_FILE="/tmp/kexec/kexec_menu.txt"
 	TMP_HASH_FILE="/tmp/kexec/kexec_hashes.txt"
-	TMP_DEFAULT_HASH_FILE="/tmp/kexec/kexec_default_hashes.txt"
+	TMP_DEFAULT_HASH_FILE="/boot/kexec_default_hashes.txt"
 	TMP_ROLLBACK_FILE="/tmp/kexec/kexec_rollback.txt"
 	TMP_KEY_DEVICES="/tmp/kexec/kexec_key_devices.txt"
 	TMP_KEY_LVM="/tmp/kexec/kexec_key_lvm.txt"
