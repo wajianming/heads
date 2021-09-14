@@ -31,6 +31,7 @@ fi
 # Recovery shells will erase anything from here
 mkdir -p /tmp/secret
 
+logo -f /dev/fb0 -b /banner.bmp -d &
 # Now it is safe to print a banner
 if [ -r /etc/motd ]; then
 	cat /etc/motd > /dev/tty0
