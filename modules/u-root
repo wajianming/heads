@@ -6,7 +6,7 @@
 #
 u-root_url := github.com/u-root/u-root
 u-root_output := $(build)/$(BOARD)/u-root.cpio
-UROOT_CMDS ?=
+UROOT_CMDS ?= $(CONFIG_UROOT_CMDS)
 
 export GOPATH=$(build)/go
 u-root_src_cmds := $(foreach cmd,$(UROOT_CMDS),github.com/u-root/u-root/cmds/$(cmd))
@@ -27,14 +27,28 @@ $(u-root_uinit): $(u-root_build) boards/$(BOARD)/uinit.go
 	$(call install,boards/$(BOARD)/uinit.go,$@)
 endif
 
+ifeq "$(CONFIG_UROOT_UINITCMD)" ""
 $(u-root_output): $(u-root_build) $(u-root_uinit)
 	$(call do,U-ROOT,$@,\
 		$(GOPATH)/bin/u-root \
 			-build=bb \
 			-format=cpio \
 			-o $@  \
-			$(u-root_src_cmds)\
+			core  \
+			$(u-root_src_cmds) \
 	)
+else
+$(u-root_output): $(u-root_build)
+	$(call do,U-ROOT,$@,\
+		$(GOPATH)/bin/u-root \
+			-build=bb \
+			-format=cpio \
+			-o $@  \
+			-uinitcmd=$(CONFIG_UROOT_UINITCMD) \
+			core  \
+			$(u-root_src_cmds) \
+	)
+endif
 
 # Override the initrd inputs and add in the kernel modules
 initrd-$(CONFIG_UROOT) += $(u-root_output)
